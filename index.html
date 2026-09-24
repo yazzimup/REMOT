@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>YAZZ Remote - Google Dice Controller</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { font-size: 24px; padding: 10px; width: 100px; text-align: center; margin: 10px 0; }
+        button { font-size: 18px; padding: 10px 20px; background: #4285F4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #357ae8; }
+        #status { margin-top: 15px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>YAZZ Remote Control</h2>
+        <p>Masukkan angka dadu yang diinginkan:</p>
+        <input type="number" id="diceInput" min="1" max="20" value="6">
+        <br>
+        <button onclick="sendData()">Kirim ke Google Dice</button>
+        <div id="status"></div>
+    </div>
+
+    <!-- Firebase SDK (Compat Version untuk kemudahan integrasi) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Konfigurasi Firebase Anda (Ganti dengan kredensial dari Firebase Console Anda)
+        const firebaseConfig = {
+            apiKey: "API_KEY_ANDA",
+            authDomain: "PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "PROJECT_ID",
+            storageBucket: "PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function sendData() {
+            const val = document.getElementById('diceInput').value;
+            db.ref('google_dice/target_value').set({
+                value: Number(val),
+                timestamp: Date.now()
+            }, (error) => {
+                if (error) {
+                    document.getElementById('status').style.color = 'red';
+                    document.getElementById('status').innerText = "Gagal mengirim!";
+                } else {
+                    document.getElementById('status').style.color = 'green';
+                    document.getElementById('status').innerText = "Berhasil dikirim: " + val;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
