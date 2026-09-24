@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <title>YAZZ Remote - Google Dice Controller</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f4f4f4; }
-        .card { background: white; padding: 20px; border-radius: 8px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input { font-size: 18px; padding: 10px; width: 100px; text-align: center; }
-        button { font-size: 18px; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 60px; background: #eef2f3; }
+        .card { background: white; padding: 30px; border-radius: 12px; display: inline-block; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 320px; }
+        h2 { color: #333; margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; }
+        input { font-size: 20px; padding: 12px; width: 120px; text-align: center; border: 2px solid #ddd; border-radius: 6px; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: #4285f4; }
+        button { font-size: 16px; font-weight: bold; padding: 12px 24px; background: #4285f4; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; width: 100%; transition: background 0.2s; }
         button:hover { background: #357ae8; }
-        #status { margin-top: 15px; font-weight: bold; color: green; }
+        #status { margin-top: 15px; font-weight: 600; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>YAZZ Remote Control</h2>
+        <h2>YAZZ Remote</h2>
         <p>Masukkan angka dadu yang diinginkan:</p>
         <input type="number" id="diceInput" min="1" max="20" value="6">
-        <br><br>
+        <br>
         <button onclick="sendData()">Kirim ke Google Dice</button>
         <div id="status"></div>
     </div>
@@ -35,7 +38,7 @@
             projectId: "planning-with-ai-a30a9",
             storageBucket: "planning-with-ai-a30a9.firebasestorage.app",
             messagingSenderId: "741900927853",
-            appId: "1:741900927853:web:94a0cc4779832863cf1064"
+            appId: "1:741900927853:web:3bb0e0f6aa2dd7c8cf1064"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -43,16 +46,18 @@
 
         function sendData() {
             const val = document.getElementById('diceInput').value;
+            const statusEl = document.getElementById('status');
+            
             db.ref('google_dice/target_value').set({
                 value: Number(val),
                 timestamp: Date.now()
             }, (error) => {
                 if (error) {
-                    document.getElementById('status').style.color = 'red';
-                    document.getElementById('status').innerText = 'Gagal mengirim!';
+                    statusEl.style.color = '#d93025';
+                    statusEl.innerText = 'Gagal mengirim!';
                 } else {
-                    document.getElementById('status').style.color = 'green';
-                    document.getElementById('status').innerText = 'Berhasil dikirim: ' + val;
+                    statusEl.style.color = '#188038';
+                    statusEl.innerText = 'Berhasil dikirim: ' + val;
                 }
             });
         }
